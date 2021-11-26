@@ -19,7 +19,7 @@ type LoginDBConfig struct {
 }
 
 type User struct {
-	Username string `bson:"userName"`
+	Username string `bson:"username"`
 	EmailId  string `bson:"emailId"`
 	Password string `bson:"password"`
 }
