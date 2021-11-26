@@ -1,10 +1,7 @@
 package util
 
 import (
-	"flag"
 	"fmt"
-	"github.com/joho/godotenv"
-	"os"
 	"runtime"
 	"runtime/debug"
 	"strings"
@@ -52,36 +49,36 @@ func LogDebug(args ...interface{}) {
 	log.Debug(args)
 }
 
-//EnvConfig :- for loading config files
-func EnvConfig() *Config {
-	if config == nil {
-		var err error
-		key := flag.String("env", "development", "")
-		flag.Parse()
-		LogInfo("env:", *key)
-		if *key == "production" {
-			log.SetFormatter(&log.TextFormatter{})
-			err = godotenv.Load("./production.env")
-		} else {
-			err = godotenv.Load("./local.env")
-			log.SetFormatter(&log.TextFormatter{})
-		}
-
-		if err != nil {
-			LogFatal("cannot load config file", err)
-		}
-
-		config = new(Config)
-		config.Port = os.Getenv("PORT")
-		config.MongoURL = os.Getenv("MONGO_URL")
-		config.DatabaseName = os.Getenv("DATABASE_NAME")
-		config.SecretKey = []byte(os.Getenv("SECRET_KEY"))
-		config.Aud = os.Getenv("AUD")
-		config.Iss = os.Getenv("ISS")
-	}
-
-	return config
-}
+////EnvConfig :- for loading config files
+//func EnvConfig() *Config {
+//	if config == nil {
+//		var err error
+//		key := flag.String("env", "development", "")
+//		flag.Parse()
+//		LogInfo("env:", *key)
+//		if *key == "production" {
+//			log.SetFormatter(&log.TextFormatter{})
+//			err = godotenv.Load("./production.env")
+//		} else {
+//			err = godotenv.Load("./local.env")
+//			log.SetFormatter(&log.TextFormatter{})
+//		}
+//
+//		if err != nil {
+//			LogFatal("cannot load config file", err)
+//		}
+//
+//		config = new(Config)
+//		config.Port = os.Getenv("PORT")
+//		config.MongoURL = os.Getenv("MONGO_URL")
+//		config.DatabaseName = os.Getenv("DATABASE_NAME")
+//		config.SecretKey = []byte(os.Getenv("SECRET_KEY"))
+//		config.Aud = os.Getenv("AUD")
+//		config.Iss = os.Getenv("ISS")
+//	}
+//
+//	return config
+//}
 
 //PrintMemUsage -test
 func PrintMemUsage() {
