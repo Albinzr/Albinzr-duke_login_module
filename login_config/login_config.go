@@ -7,5 +7,6 @@ type Config struct {
 	CollectionName         string
 	Aud                    string
 	Iss                    string
+	SecretKey              string
 	ForgotPasswordCallback func(emailId string, token string)
 }

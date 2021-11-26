@@ -145,7 +145,7 @@ func (c *Config) resetPasswordHandler(w http.ResponseWriter, req *http.Request) 
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return util.EnvConfig().SecretKey, nil
+		return c.LoginConfig.SecretKey, nil
 	})
 
 	if err != nil {
@@ -185,7 +185,7 @@ func (c *Config) forgotPasswordHandler(w http.ResponseWriter, req *http.Request)
 	emailId := req.Form.Get("emailId")
 	util.LogInfo(emailId, "====>")
 	if c.DBConfig.IsUserValid(emailId) {
-		token, err := resetToken(emailId)
+		token, err := c.resetToken(emailId)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			resp := util.ErrorResponse("please try after sometime", "Failed to generate token", err)
@@ -215,7 +215,7 @@ func (c *Config) getJWT(username string, userId primitive.ObjectID) (string, err
 	claims["iss"] = c.DBConfig.Iss
 	claims["exp"] = time.Now().Add(time.Minute * 1).Unix()
 
-	tokenString, err := token.SignedString(util.EnvConfig().SecretKey)
+	tokenString, err := token.SignedString(c.LoginConfig.SecretKey)
 
 	if err != nil {
 		util.LogError("Something Went Wrong:", err)
@@ -240,12 +240,12 @@ func isPasswordValid(hash []byte, password []byte) bool {
 	return true
 }
 
-func resetToken(emailId string) (string, error) {
+func (c *Config) resetToken(emailId string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["emailId"] = emailId
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
-	tokenString, err := token.SignedString(util.EnvConfig().SecretKey)
+	tokenString, err := token.SignedString(c.LoginConfig.SecretKey)
 	if err != nil {
 		util.LogError("Something Went Wrong:", err)
 		return "", err
