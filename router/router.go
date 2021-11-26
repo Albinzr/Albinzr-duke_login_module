@@ -143,11 +143,12 @@ func (c *Config) resetPasswordHandler(w http.ResponseWriter, req *http.Request) 
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			fmt.Println("Error-------------------->")
 			return nil, errors.New("unexpected signing method")
 		}
 		return c.LoginConfig.SecretKey, nil
 	})
-
+	fmt.Println("Error-------------------->2")
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		resp := util.ErrorResponse("invalid token", "token not valid", err)
