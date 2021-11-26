@@ -7,6 +7,6 @@ type Config struct {
 	CollectionName         string
 	Aud                    string
 	Iss                    string
-	SecretKey              string
+	SecretKey              []byte
 	ForgotPasswordCallback func(emailId string, token string)
 }
