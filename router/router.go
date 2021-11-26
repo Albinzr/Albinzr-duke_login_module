@@ -155,7 +155,7 @@ func (c *Config) resetPasswordHandler(w http.ResponseWriter, req *http.Request) 
 		_, _ = w.Write(resp)
 		return
 	}
-
+	fmt.Println("Error-------------------->3")
 	claims, _ := token.Claims.(jwt.MapClaims)
 	emailId := claims["emailId"].(string)
 
@@ -214,7 +214,7 @@ func (c *Config) getJWT(username string, userId primitive.ObjectID) (string, err
 	claims["userId"] = userId
 	claims["aud"] = c.DBConfig.Aud
 	claims["iss"] = c.DBConfig.Iss
-	claims["exp"] = time.Now().Add(time.Minute * 1).Unix()
+	claims["exp"] = time.Now().Add(time.Minute * 100).Unix()
 
 	tokenString, err := token.SignedString(c.LoginConfig.SecretKey)
 
