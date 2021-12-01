@@ -7,7 +7,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 type LoginDBConfig struct {
@@ -28,24 +27,24 @@ type User struct {
 //Init :- initialize function
 func (c *LoginDBConfig) Init() {
 	c.collection = c.Database.Collection(c.CollectionName)
-
-	models := []mongo.IndexModel{
-		{
+	indexName, err := c.collection.Indexes().CreateOne(
+		context.Background(),
+		mongo.IndexModel{
 			Keys:    bson.D{{Key: "username", Value: 1}},
 			Options: options.Index().SetUnique(true),
 		},
-		{
-			Keys:    bson.D{ {Key: "emailId", Value: 1}},
+	)
+	if err != nil {
+		util.LogError("unable to create indexes for db", err)
+		return
+	}
+	indexName, err = c.collection.Indexes().CreateOne(
+		context.Background(),
+		mongo.IndexModel{
+			Keys:    bson.D{{Key: "emailId", Value: 1}},
 			Options: options.Index().SetUnique(true),
 		},
-	}
-	opts := options.CreateIndexes().SetMaxTime(10 * time.Second)
-	indexName, err := c.collection.Indexes().CreateMany(
-		context.Background(),
-		models,
-		opts,
-		)
-
+	)
 
 	if err != nil {
 		util.LogError("unable to create indexes for db", err)
