@@ -160,7 +160,7 @@ func (c *Config) resetPasswordHandler(w http.ResponseWriter, req *http.Request) 
 		if c.DBConfig.IsUserValid(emailId) {
 			passwordHash := getHash([]byte(password))
 			if c.DBConfig.UpdatePassword(emailId, passwordHash) {
-				resp := util.SuccessResponse(`{"response":"password successfully"}`)
+				resp := util.SuccessResponse(`{"response":"password reset successful"}`)
 				_, _ = w.Write(resp)
 			}
 		} else {

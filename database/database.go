@@ -27,13 +27,23 @@ type User struct {
 //Init :- initialize function
 func (c *LoginDBConfig) Init() {
 	c.collection = c.Database.Collection(c.CollectionName)
-	indexName, err := c.collection.Indexes().CreateOne(
-		context.Background(),
-		mongo.IndexModel{
-			Keys:    bson.D{{Key: "username", Value: 1}, {Key: "emailId", Value: 1}},
+
+	models := []mongo.IndexModel{
+		{
+			Keys:    bson.D{{Key: "username", Value: 1}},
 			Options: options.Index().SetUnique(true),
 		},
-	)
+		{
+			Keys:    bson.D{ {Key: "emailId", Value: 1}},
+			Options: options.Index().SetUnique(true),
+		},
+	}
+
+	indexName, err := c.collection.Indexes().CreateMany(
+		context.Background(),
+		models,
+		)
+
 
 	if err != nil {
 		util.LogError("unable to create indexes for db", err)
