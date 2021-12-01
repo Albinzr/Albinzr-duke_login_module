@@ -30,7 +30,7 @@ func (c *LoginDBConfig) Init() {
 	indexName, err := c.collection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
-			Keys:    bson.D{{Key: "username", Value: 1}},
+			Keys:    bson.M{"emailId": 1},
 			Options: options.Index().SetUnique(true),
 		},
 	)
@@ -41,7 +41,7 @@ func (c *LoginDBConfig) Init() {
 	indexName, err = c.collection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
-			Keys:    bson.D{{Key: "emailId", Value: 1}},
+			Keys:    bson.M{"emailId": 1},
 			Options: options.Index().SetUnique(true),
 		},
 	)
