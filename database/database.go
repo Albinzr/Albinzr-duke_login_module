@@ -30,18 +30,7 @@ func (c *LoginDBConfig) Init() {
 	indexName, err := c.collection.Indexes().CreateOne(
 		context.Background(),
 		mongo.IndexModel{
-			Keys:    bson.M{"emailId": 1},
-			Options: options.Index().SetUnique(true),
-		},
-	)
-	if err != nil {
-		util.LogError("unable to create indexes for db", err)
-		return
-	}
-	indexName, err = c.collection.Indexes().CreateOne(
-		context.Background(),
-		mongo.IndexModel{
-			Keys:    bson.M{"emailId": 1},
+			Keys:    bson.D{{Key: "username", Value: 1}, {Key: "emailId", Value: 1}},
 			Options: options.Index().SetUnique(true),
 		},
 	)
