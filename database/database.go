@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"time"
 )
 
 type LoginDBConfig struct {
@@ -38,10 +39,11 @@ func (c *LoginDBConfig) Init() {
 			Options: options.Index().SetUnique(true),
 		},
 	}
-
+	opts := options.CreateIndexes().SetMaxTime(10 * time.Second)
 	indexName, err := c.collection.Indexes().CreateMany(
 		context.Background(),
 		models,
+		opts,
 		)
 
 
