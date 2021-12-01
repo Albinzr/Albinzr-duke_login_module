@@ -156,7 +156,9 @@ func (c *Config) resetPasswordHandler(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 	fmt.Println("Error-------------------->3")
-	claims, _ := token.Claims.(jwt.MapClaims)
+	claims, k := token.Claims.(jwt.MapClaims)
+	fmt.Println("Error-------------------->4")
+	fmt.Println(k)
 	emailId := claims["emailId"].(string)
 
 	if c.DBConfig.IsUserValid(emailId) {
