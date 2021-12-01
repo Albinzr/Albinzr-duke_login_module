@@ -155,24 +155,29 @@ func (c *Config) resetPasswordHandler(w http.ResponseWriter, req *http.Request) 
 		_, _ = w.Write(resp)
 		return
 	}
-	fmt.Println("Error-------------------->3")
-	claims, k := token.Claims.(jwt.MapClaims)
-	fmt.Println("Error-------------------->4")
-	fmt.Println(k,claims)
-	emailId := claims["emailId"].(string)
-
-	if c.DBConfig.IsUserValid(emailId) {
-		passwordHash := getHash([]byte(password))
-		if c.DBConfig.UpdatePassword(emailId, passwordHash) {
-			resp := util.SuccessResponse(`{"response":"password successfully"}`)
+	claims, _ := token.Claims.(jwt.MapClaims)
+	if emailId, ok := claims["emailId"].(string); ok {
+		if c.DBConfig.IsUserValid(emailId) {
+			passwordHash := getHash([]byte(password))
+			if c.DBConfig.UpdatePassword(emailId, passwordHash) {
+				resp := util.SuccessResponse(`{"response":"password successfully"}`)
+				_, _ = w.Write(resp)
+			}
+		} else {
+			w.WriteHeader(http.StatusUnauthorized)
+			resp := util.ErrorResponse("invalid emailId", "not a valid emailId", err)
 			_, _ = w.Write(resp)
+			return
 		}
-	} else {
+	}else{
 		w.WriteHeader(http.StatusUnauthorized)
-		resp := util.ErrorResponse("invalid emailId", "not a valid emailId", err)
+		resp := util.ErrorResponse("invalid token", "token not valid", err)
 		_, _ = w.Write(resp)
 		return
 	}
+
+
+
 
 }
 
